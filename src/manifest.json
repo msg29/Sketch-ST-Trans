@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/sketch-hq/SketchAPI/develop/docs/sketch-plugin-manifest-schema.json",
+  "icon": "icon.png",
+  "commands": [
+    {
+      "name": "S2T",
+      "identifier": "stt-plugin.S2T-identifier",
+      "script": "./S2T.js"
+    },
+    {
+      "name": "T2S",
+      "identifier": "stt-plugin.T2S-identifier",
+      "script": "./T2S.js"
+    }
+  ],
+  "menu": {
+    "title": "stt-plugin",
+    "items": [
+      "stt-plugin.S2T-identifier","stt-plugin.T2S-identifier"
+    ]
+  }
+}
