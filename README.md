@@ -1,4 +1,10 @@
 # stt-plugin
+## How to use
+插件 -> stt-plugin 
+                  ->s2t 简->繁
+                  ->t2s 繁->简
+
+当前document 中的文本内容都会被扫描，中文都会被转换
 
 ## Installation
 
