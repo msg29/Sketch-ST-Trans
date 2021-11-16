@@ -8,22 +8,33 @@ function ftPYStr() {
 }
 
 function changeText(layer, type) {
-    if (isText(layer)) {
-        var tr = "";
-        if (type == "s2t") {
-            tr = fry_traditionalized(layer.text);
-        } else {
-            tr = fry_simplized(layer.text);
-        }
-        log(`${type} ${tr} ${typeof tr} layers selected.`);
-        layer.text = tr;
+    if (isSymbol(layer)) {
+        layer.overrides.forEach((override, index, array) => {
+            if (override.property == 'stringValue') {
+                override.value = getChangedValue(override.value, type)
+            }
+        })
+    } else if (isText(layer)) {
+        var tr = getChangedValue(layer.text, type)
+        log(`${type} ${tr} ${typeof tr} layers selected.`)
+        layer.text = tr
     } else {
         if (isObjectVisible(layer.layers)) {
             layer.layers.forEach((item, index, array) => {
-                changeText(item, type);
+                changeText(item, type)
             })
         }
     }
+}
+
+function getChangedValue(value, type) {
+    var tr = "";
+    if (type == "s2t") {
+        tr = fry_traditionalized(value)
+    } else {
+        tr = fry_simplized(value)
+    }
+    return tr
 }
 
 function isObjectVisible(obj) {
@@ -34,33 +45,50 @@ function isText(layer) {
     return layer.type === String(sketch.Types.Text)
 }
 
+function isSymbol(layer) {
+    return layer.type === String(sketch.Types.SymbolInstance)
+}
+
 //转换成繁体
 function fry_traditionalized(cc) {
     var str = '';
     for (var i = 0; i < cc.length; i++) {
         if (simpPYStr().indexOf(cc.charAt(i)) != -1)
-            str += ftPYStr().charAt(simpPYStr().indexOf(cc.charAt(i)));
+            str += ftPYStr().charAt(simpPYStr().indexOf(cc.charAt(i)))
         else
-            str += cc.charAt(i);
+            str += cc.charAt(i)
     }
-    return str;
+    return str
 }
 //转换成简体
 function fry_simplized(cc) {
     var str = '';
     for (var i = 0; i < cc.length; i++) {
         if (ftPYStr().indexOf(cc.charAt(i)) != -1)
-            str += simpPYStr().charAt(ftPYStr().indexOf(cc.charAt(i)));
+            str += simpPYStr().charAt(ftPYStr().indexOf(cc.charAt(i)))
         else
-            str += cc.charAt(i);
+            str += cc.charAt(i)
     }
-    return str;
+    return str
 }
 
 
 export default {
 
     trans: function (type) {
+
+        // const doc = sketch.getSelectedDocument()
+        // const selectedLayers = doc.selectedLayers
+        // const selectedCount = selectedLayers.length
+
+        // log(selectedLayers.layers[0].overrides[0].value)
+        // selectedLayers.layers[0].overrides[0].value = 'lalalalal'
+
+        // if (selectedCount === 0) {
+        //     sketch.UI.message('No layers are selected.')
+        // } else {
+        //     sketch.UI.message(`${selectedCount} layers selected.`)
+        // }
         const documents = require('sketch/dom').getSelectedDocument();
         documents.pages.forEach((page, index, array) => {
             page.layers.forEach((layer, index, array) => {
